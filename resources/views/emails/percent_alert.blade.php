@@ -1,0 +1,1 @@
+<p>The price of BTC has jumped/droped with {{ $percentChange }}% for last {{ $interval }} hours. Your criteria: {{ $percent }}%, {{ $interval }}h.</p>

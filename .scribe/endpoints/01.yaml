@@ -1,0 +1,459 @@
+name: 'Track endpoints (using Bitfinex API)'
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - GET
+    uri: tracker/candles
+    metadata:
+      groupName: 'Track endpoints (using Bitfinex API)'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get candle data from the Bitfinex API.'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      symbol:
+        name: symbol
+        description: "string The symbol of the asset (e.g., 'tBTCUSD')."
+        required: true
+        example: tBTCUSD
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      start:
+        name: start
+        description: 'int Start time in milliseconds.'
+        required: true
+        example: '1622512800000'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      end:
+        name: end
+        description: 'int End time in milliseconds.'
+        required: true
+        example: '1622599200000'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanQueryParameters:
+      symbol: tBTCUSD
+      start: '1622512800000'
+      end: '1622599200000'
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"data":[{"timestamp":null,"closingPrice":null},{"timestamp":null,"closingPrice":null}]}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+               {
+                 "timestamp": 1622512800000,
+                 "closingPrice": 38156.5
+               },
+               {
+                 "timestamp": 1622599200000,
+                 "closingPrice": 38412.7
+               }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 400
+        content: |-
+          {
+             "error": 400,
+             "message": "Params symbol, start and end are required"
+          }
+        headers: []
+        description: 'Missing required parameters'
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+             "error": 500,
+             "message": "Error message"
+          }
+        headers: []
+        description: 'Bitfinex API error'
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'tracker/ticker/{symbol}'
+    metadata:
+      groupName: 'Track endpoints (using Bitfinex API)'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get the ticker data from Bitfinex API.'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      symbol:
+        name: symbol
+        description: ''
+        required: true
+        example: labore
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanUrlParameters:
+      symbol: labore
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"data":{"lastPrice":null,"dailyHighest":null,"dailyLowest":null}}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+           "lastPrice":54157,
+           "dailyHighest":54925,
+           "dailyLowest":52194
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+           "error": 500,
+           "message": "Error message"
+          }
+        headers: []
+        description: 'Invalid symbol'
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: tracker
+    metadata:
+      groupName: 'Track endpoints (using Bitfinex API)'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Display a listing of the resource.'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          set-cookie: 'XSRF-TOKEN=eyJpdiI6ImxOdldSc2JjYW1ORitTalhoaXZHU2c9PSIsInZhbHVlIjoibGljVEJ6aGhQL2hzWkFMVWtMaUxGQkptRGU3dUFWVmlJZWJGU3BSNmtudHJMMGhnTm5FQmd5S0VZbkh0ZlNYeVZocEJSRTNoeXpmaGtkOUt2YTgybTBiY2NiUGJsTXRRQmFKWS9IVVRBRG0zZmtiNEEyMG9rTVNaeXBoZU1sa3QiLCJtYWMiOiJkNGVmNGQwNWU5MjZjZDU2ZTg0NWQ4MmQyMDE3N2YyNzljZTcwMTU2ZGZiYTMwZWZlNTQ2NWRlYTc1ZTdkN2E3IiwidGFnIjoiIn0%3D; expires=Sat, 14 Sep 2024 17:46:02 GMT; Max-Age=7200; path=/; samesite=lax; laravel_session=eyJpdiI6ImVsRnlDeldZUisybUxDS2JpK0U2R1E9PSIsInZhbHVlIjoiVmpYdDQrUEFqbmRibWpId0RVaFdxRmZacVVueU1RcFZvVk84N2d3N0l5UUZlc1FvL0ZvVTRGdzRuYk4vM0kzZzNoVTBFS2g2OGFzK0VGazNvL2VtNWo2d25kOVA1YTZMZnNMcGtoUXZEU0IxblRiZmd1ZWRoa0l5ZVFyQk1SUjgiLCJtYWMiOiI5ZWQ0YmFkMDgxYjQ5NjQzZWZmYTVlNWFmMTgwNzE5NWNlZDA2YTZhYjkyMGRmMTAwYzM0ZjYxNmI2OWIxZjk1IiwidGFnIjoiIn0%3D; expires=Sat, 14 Sep 2024 17:46:02 GMT; Max-Age=7200; path=/; httponly; samesite=lax'
+        description: null
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: tracker/create
+    metadata:
+      groupName: 'Track endpoints (using Bitfinex API)'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Show the form for creating a new resource.'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          set-cookie: 'XSRF-TOKEN=eyJpdiI6InRqVDV0dDRMdWJPKzlDL1NXVEZld1E9PSIsInZhbHVlIjoiNVFpbDMwcEo2NG02WjRzRm5OV3ZhNXlLWVpTSkhuQjFsRW9WNXhiUVpVeUFySlJsTy9RcHhQdVJVNjVYQTduS1l3WE4zTklXdjMzYXlzVVRVdmkxUWpneVpsblM1andCSUJ5ZGZOM2dIUGhYL3pObWh3Q1pIODQzRC9ibi9Gb2kiLCJtYWMiOiJiNDI4MWM1YmExODc2NWI4MTQwNjg5OWYzOWRmYzM2ZjZhMGI0YzNiZTk2MTljNWU2NTdlNzIwNTgyMDc4YzQyIiwidGFnIjoiIn0%3D; expires=Sat, 14 Sep 2024 17:46:02 GMT; Max-Age=7200; path=/; samesite=lax; laravel_session=eyJpdiI6ImlBa1R6dkVlNTRZWitWSWo1TDJtZWc9PSIsInZhbHVlIjoidk5qR3NhZXZwU0w3UXVHNGxZUjdkakZnbDVIRnZFdVZydDBpRndrZ2xDc0R0bFRDb1luUnNQZm1LOFhYNk40ZWJoN1Zjb0VMK1JkakRkRFlvNnVYNUdieWZFMlNCMUtvVEJjRWdZSzdyVGtzWDZNWGVJQkxtRDFiVU9MYXFlaEYiLCJtYWMiOiI3YjAwNDRmZTJkNTZhMWE3MmFhYzY0N2I4MzAzZGFjMjFmMGE4NDRlYzE2ODNjNjE0YzRiODg2NWNiM2VhNWRlIiwidGFnIjoiIn0%3D; expires=Sat, 14 Sep 2024 17:46:02 GMT; Max-Age=7200; path=/; httponly; samesite=lax'
+        description: null
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: tracker
+    metadata:
+      groupName: 'Track endpoints (using Bitfinex API)'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Store a newly created resource in storage.'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'tracker/{id}'
+    metadata:
+      groupName: 'Track endpoints (using Bitfinex API)'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Display the specified resource.'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the tracker.'
+        required: true
+        example: 15
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanUrlParameters:
+      id: 15
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          set-cookie: 'XSRF-TOKEN=eyJpdiI6IjJVbk93c2prbUxHazV4MGN2dnl4eFE9PSIsInZhbHVlIjoidU42UFE1UHZ6c2dsUnJ0SWsvc2hNdXk3RDNGQ0xmS3hpM3c4K25pZlRvZVI0U1NtVGtVckg5bGFJbzZRZGViK0d5ekRFTkpiWGRhanFKbkhxTENsTkRGckJMRjMrSXBPYkpnTG5DR3ZsbU1mN1NEMkVmeUFjUTFyT1VrUnZRdmwiLCJtYWMiOiJmZTllNjc0YmQ4YzA1OTUzZmEwNDg4YTViYzU3ZDllMjQ3YjJkNjhhYTM3MDBjMjhkYjZhM2VjODBlMGFmNTkyIiwidGFnIjoiIn0%3D; expires=Sat, 14 Sep 2024 17:46:02 GMT; Max-Age=7200; path=/; samesite=lax; laravel_session=eyJpdiI6Im90VWx4ZkpacXNlbjNFemxqM2Q4WGc9PSIsInZhbHVlIjoibHpTU2ZJaUFmWGE0NnU1c2FLVWUwb21CVjgzTVJTN0xrM0ZmaWZ1b0E0dThHVFhxd1VtRHJ0MHdydG80MEVCQ2JJZXU4a2h2VkRud3BkaWFPTk9XMkYzbEo4eWRMcDJEYlNmQ3JxSzZhK1BnVU9VRlRPZk1SdkNLSGlodXVNRVciLCJtYWMiOiI5NDNkNzkzNGI1M2ZhZjcxZTY4NTc1MmNjMWY4YTA1ZGJmMDRhZTZlNjM5NzEwZTAyMTgxMjBhZWViYzk1YmM1IiwidGFnIjoiIn0%3D; expires=Sat, 14 Sep 2024 17:46:02 GMT; Max-Age=7200; path=/; httponly; samesite=lax'
+        description: null
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'tracker/{tracker_id}/edit'
+    metadata:
+      groupName: 'Track endpoints (using Bitfinex API)'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Show the form for editing the specified resource.'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      tracker_id:
+        name: tracker_id
+        description: 'The ID of the tracker.'
+        required: true
+        example: 11
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanUrlParameters:
+      tracker_id: 11
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          set-cookie: 'XSRF-TOKEN=eyJpdiI6IjFBRzlQT1NEN2lJVmtOTkJQVm9NblE9PSIsInZhbHVlIjoiOGxrSURoQVZnL0huelRvYWVtUVZrbk9oWktqdGU4Vy9DZWZqb0lCWHFKVmF3VnRoaE1Mamw3SkdkMExQaVdrODVYL2p0eGp3M3dpZ1Nsb0VMSWlTd1lhaWxtVHpJUkpJdmE0NlVRYjh4UVVoUlgyNVRoNDlnWEdEdTMyNzFTRU4iLCJtYWMiOiI5YTJhZjVmMTYxNGVmYjQxYjVhMzA5MGMwOTE3MjBiMzhmZWY5MGQxYTkwMDEwNTM1OWJhODNlMDlhNTQ0NDc1IiwidGFnIjoiIn0%3D; expires=Sat, 14 Sep 2024 17:46:02 GMT; Max-Age=7200; path=/; samesite=lax; laravel_session=eyJpdiI6IkZQZ0tmRWEya1lDOUlzZElNanFsb0E9PSIsInZhbHVlIjoiMCtyc1NqeFhlRGZlQURBL0wraGEza3FMTEZiMzhIR2hWVXN1Yi9qd0E2Wk1TVGdzbXJsTWpPTVNXdnVydnptMG9jbnZQLytacGc3WlFaTFpJcW5uZU5aa2JETWExd2ZrbFJmc0JPZ003SFlqeFQwUlF2bmMyemdYd2pQZ2czZU8iLCJtYWMiOiI4NjYzNzE4MWI3NThkNjM0NjcxZGQ2MDNjYjlmYzc4Nzg4NmE3YjY2YjRkMGNlNzMxNjEwZGNhNmVmMGEwMGY1IiwidGFnIjoiIn0%3D; expires=Sat, 14 Sep 2024 17:46:02 GMT; Max-Age=7200; path=/; httponly; samesite=lax'
+        description: null
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PUT
+      - PATCH
+    uri: 'tracker/{id}'
+    metadata:
+      groupName: 'Track endpoints (using Bitfinex API)'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update the specified resource in storage.'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the tracker.'
+        required: true
+        example: 9
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanUrlParameters:
+      id: 9
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - DELETE
+    uri: 'tracker/{id}'
+    metadata:
+      groupName: 'Track endpoints (using Bitfinex API)'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Remove the specified resource from storage.'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the tracker.'
+        required: true
+        example: 7
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanUrlParameters:
+      id: 7
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
