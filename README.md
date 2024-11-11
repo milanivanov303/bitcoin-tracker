@@ -10,6 +10,13 @@
 ## About Bitcoin Tracker app
 Application to track bitcoin price using Bitfinex public API.
 
+Some project details:
+1. Project is Laravel 11; Using Vue and Inertia
+2. To run the project - 'php artisan serve', 'npm run dev'
+3. Subscription is allowed to fill different than user's email
+4. Data for bitcoin prices is not stored in db 
+5. Subscription is only for USD
+
 Documentation
 - [docs](http://localhost:8000/docs).
 
@@ -19,6 +26,7 @@ Tests
     - /storage/logs/laravel.log
     - /storage/logs/price_alerts.log
     - /storage/logs/percent_alerts.log
+   
 
 
 
