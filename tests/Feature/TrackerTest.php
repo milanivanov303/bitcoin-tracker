@@ -58,9 +58,10 @@ class TrackerTest extends TestCase
     {
         $response = $this->json('GET', '/tracker/ticker/tINVALID');
 
-        $response->assertStatus(200)
+        $response->assertStatus(400)
         ->assertJson([
-            'error' => 500,
+            'error'   => 400,
+            'message' => 'Error fetching price data'
         ]);
     }
 
@@ -73,7 +74,7 @@ class TrackerTest extends TestCase
             'symbol' => $symbol,
         ]);
 
-        $response->assertStatus(200)
+        $response->assertStatus(400)
             ->assertJson([
                 'error' => 400
             ]);

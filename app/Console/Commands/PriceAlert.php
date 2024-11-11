@@ -3,10 +3,13 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Http\Controllers\Modules\Tracker\TrackerController;
 use App\Models\PriceAlert as PriceAlertModel;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\PriceNotification;
+use App\Services\TickerService;
+use App\Jobs\CheckPriceAlertsJob;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Bus;
 
 class PriceAlert extends Command
 {
@@ -24,63 +27,52 @@ class PriceAlert extends Command
      */
     protected $description = 'Check and send alerts for bitcoin prices';
 
-    protected string $currency = 'tBTCUSD';
+    protected readonly string $currency;
+
+    protected string $channel = 'price_alerts';
+
+    public function __construct(
+        protected TickerService $tickerService
+    )
+    {
+        parent::__construct();
+        $this->currency = 'tBTCUSD';
+    }
 
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        $time = now();
-        $this->info("{$time} Running");
+        Log::channel($this->channel)->info(now() . " Running");
 
         $currentPrice = $this->getCurrentPrice();
         if(!$currentPrice) {
-            $this->info('End');
+            Log::channel($this->channel)->info('End');
             return;
         }
 
-        $this->info("Current price {$currentPrice}");
-        $this->checkPriceAlerts($currentPrice);
-
-        $this->info('End');
-    }
-
-    /**
-     * Check the price and send notification if it exceeds the set limit.
-     *
-     * @param int $currentPrice
-     */
-    protected function checkPriceAlerts(int $currentPrice) : bool
-    {
-        PriceAlertModel::where('price', '<', $currentPrice)
-            ->get()
-            ->each(function ($alert) use ($currentPrice) {
-                try {
-                    $now = now();
-                    Mail::to($alert->email)->send(new PriceNotification($currentPrice, $alert->price));
-                    
-                    $this->info("Email sent to {$alert->email} at {$now}");
-                } catch (\Exception $e) {
-                    $this->error('Error sending email: ' . $e->getMessage());
-                }
-        });
-
-        return true;
+        Log::channel($this->channel)->info("Current price {$currentPrice}");
+        
+        Bus::dispatchSync(new CheckPriceAlertsJob(
+            channel: $this->channel,
+            currentPrice: $currentPrice
+        ));
     }
 
     /**
      * Get current bitcoin price
      */
-    protected function getCurrentPrice(): ?int
+    protected function getCurrentPrice(): int|null
     {
-        $ticker = app(TrackerController::class)->getTicker($this->currency);
-        $tickerData = collect($ticker->getData());
+        $ticker = $this->tickerService->getTicker(symbol: $this->currency);
 
-        if ($tickerData->has('error') || !$tickerData->has('lastPrice')) {
-            $this->error('Error getting current bitcoin price');
+        if ($ticker === null) {
+            Log::channel($this->channel)->error('Error getting current bitcoin price');
             return null;
         }
+
+        $tickerData = collect($ticker->getData());
 
         return $tickerData->get('lastPrice');
     }

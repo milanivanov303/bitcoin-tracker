@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\PriceAlert;
 use App\Models\PercentAlert;
 use Illuminate\Http\JsonResponse;
+use App\Http\Requests\StoreAlertRequest;
+use Illuminate\Http\RedirectResponse;
 
 /**
  * @group Subscription endpoints
@@ -18,13 +20,13 @@ class SubscriptionController extends Controller
      * 
      * @authenticated
      * 
-     * @param Request $request
+     * @param StoreAlertRequest $request
      * @return JsonResponse
      */
-    public function subscribe(Request $request): JsonResponse
+    public function subscribe(StoreAlertRequest $request): JsonResponse
     {
         $subscriptionHandlers = [
-            'price' => 'subscribeForPriceAlert',
+            'price'   => 'subscribeForPriceAlert',
             'percent' => 'subscribeForPercentAlert',
         ];
     
@@ -49,25 +51,16 @@ class SubscriptionController extends Controller
      *  'message' => 'You have been subscribed to price alerts.'
      * }
      * 
-     * @param Request $request
+     * @param StoreAlertRequest $request
      * @return JsonResponse
      */
-    protected function subscribeForPriceAlert(Request $request): JsonResponse
+    protected function subscribeForPriceAlert(StoreAlertRequest $request): JsonResponse
     {
-        $request->validate([
-            'email' => 'required|email',
-            'price' => 'required|numeric',
-        ]);
-
-        PriceAlert::create([
-            'email'   => $request->email,
-            'price'   => $request->price,
-            'user_id' => auth()->id(),
-        ]);
+        $priceAlertDetails = $request->safe()->merge(['user_id' => auth()->id()])->input();
+        PriceAlert::create($priceAlertDetails);
 
         return response()->json([
-            'success' => true,
-            'message' => 'You have been subscribed to price alerts.',
+            'message' => 'You have been subscribed to price alerts'
         ]);
     }
 
@@ -85,27 +78,16 @@ class SubscriptionController extends Controller
      *  'message' => 'You have been subscribed to percent alerts.'
      * }
      * 
-     * @param Request $request
+     * @param StoreAlertRequest $request
      * @return JsonResponse
      */
-    protected function subscribeForPercentAlert(Request $request): JsonResponse
+    protected function subscribeForPercentAlert(StoreAlertRequest $request): JsonResponse
     {
-        $request->validate([
-            'email'        => 'required|email',
-            'percent'      => 'required|numeric|between:0,10000',
-            'timeInterval' => 'required|numeric'
-        ]);
-
-        PercentAlert::create([
-            'email'    => $request->email,
-            'percent'  => $request->percent,
-            'interval' => $request->timeInterval,
-            'user_id'  => auth()->id(),
-        ]);
+        $percentAlertDetails = $request->safe()->merge(['user_id' => auth()->id()])->input();
+        PercentAlert::create($percentAlertDetails);
 
         return response()->json([
-            'success' => true,
-            'message' => 'You have been subscribed to percent alerts.',
+            'message' => 'You have been subscribed to percent alerts',
         ]);
     }
 }

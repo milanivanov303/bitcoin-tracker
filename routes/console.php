@@ -10,10 +10,8 @@ Artisan::command('inspire', function () {
 
 Schedule::command('app:price-alert')
     ->everyMinute()
-    ->withoutOverlapping()
-    ->appendOutputTo(storage_path('logs/price_alerts.log'));
+    ->withoutOverlapping();
 
 Schedule::command('app:percent-alert')
     ->everyMinute()
-    ->withoutOverlapping()
-    ->appendOutputTo(storage_path('logs/percent_alerts.log'));
+    ->withoutOverlapping();

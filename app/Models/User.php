@@ -44,4 +44,14 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function priceAlerts()
+    {
+        return $this->hasMany(PriceAlert::class);
+    }
+
+    public function percentAlerts()
+    {
+        return $this->hasMany(PercentAlert::class);
+    }
 }

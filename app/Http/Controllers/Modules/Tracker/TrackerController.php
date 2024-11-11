@@ -7,12 +7,19 @@ use Illuminate\Http\JsonResponse;
 use App\Http\Resources\CandleResource;
 use App\Http\Resources\TickerResource;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Http;
+use App\Services\TickerService;
 
 /**
  * @group Track endpoints (using Bitfinex API)
  */
 class TrackerController extends Controller
 {
+    public function __construct(private TickerService $tickerService)
+    {
+        $this->baseUrl = config("app.bitfinex.url");
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -94,23 +101,13 @@ class TrackerController extends Controller
      */
     public function getTicker(string $symbol) : JsonResponse
     {
-        try {
-            $client = new \GuzzleHttp\Client();
-            $baseUrl = config("app.bitfinex.url");
-
-            $response = $client->request("GET", "{$baseUrl}/ticker/{$symbol}", [
-                "headers" => [
-                  "accept" => "application/json",
-                ],
-              ]);
-
-            return response()->json(new TickerResource(json_decode($response->getBody(), true)));
-        } catch (\Exception $e) {
-            return response()->json([
-                "error" => $e->getCode(),
-                "message" => $e->getMessage(),
-            ]);
-        }
+        return $this->tickerService->getTicker($symbol) ?? response()->json(
+            data: [
+                'error'   => 400,
+                'message' => 'Error fetching price data',
+            ], 
+            status: 400
+        );
     }
 
     /**
@@ -153,10 +150,10 @@ class TrackerController extends Controller
     public function getCandles(Request $request) : JsonResponse
     {
         if (!$request->has('symbol') || !$request->has('start') || !$request->has('end')) {
-            return response()->json([
+            return response()->json(data: [
                 "error" => 400,
                 "message" => "Params symbol, start and end are required",
-            ]);
+            ], status: 400);
         }
 
         $symbol = $request->get('symbol');
@@ -164,23 +161,28 @@ class TrackerController extends Controller
         $end = $request->get('end');
 
         try {
-            $client = new \GuzzleHttp\Client();
-            $baseUrl = config("app.bitfinex.url");
-
-            $response = $client->request("GET", "{$baseUrl}/candles/trade%3A1h%3A{$symbol}/hist", [
-                "headers" => [
-                  "accept" => "application/json",
-                ],
-                'query' => [
+            $response = Http::withHeaders(headers: [
+                "accept" => "application/json"
+            ])->get(
+                url: "{$this->baseUrl}/candles/trade%3A1h%3A{$symbol}/hist",
+                query: [
                     'start' => $start,
                     'end' => $end,
                     'sort' => 1
-                ],
-              ]);
+                ]
+            );
 
-            return response()->json(CandleResource::collection(json_decode($response->getBody(), true)));
+            $candles = $response->json();
+
+            return response()->json(
+                data: $candles ? CandleResource::collection($candles) : [
+                    'error' => 500,
+                    'message' => 'Internal Server Error',
+                ],
+                status: $candles ? 200 : 500
+            );
         } catch (\Exception $e) {
-            return response()->json([
+            return response()->json(data: [
                 "error" => $e->getCode(),
                 "message" => $e->getMessage(),
             ]);

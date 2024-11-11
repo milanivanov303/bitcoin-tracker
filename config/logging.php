@@ -127,6 +127,18 @@ return [
             'path' => storage_path('logs/laravel.log'),
         ],
 
+        'price_alerts' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/price_alerts.log'),
+            'level' => 'info',
+        ],
+
+        'percent_alerts' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/percent_alerts.log'),
+            'level' => 'info',
+        ],
+
     ],
 
 ];

@@ -30,7 +30,7 @@ class SubscriptionTest extends TestCase
                 'price'  => $this->faker->randomNumber(),
             ])->assertStatus(Response::HTTP_OK)
             ->assertJson([
-                'success' => true
+                'message' => 'You have been subscribed to price alerts'
             ]);
     }
 
@@ -42,10 +42,10 @@ class SubscriptionTest extends TestCase
                 'type'         => 'percent',
                 'email'        => $this->faker->email(),
                 'percent'      => $this->faker->numberBetween(0, 10000),
-                'timeInterval' => $this->faker->randomElement($intervals),
+                'interval'     => $this->faker->randomElement($intervals),
             ])->assertStatus(Response::HTTP_OK)
             ->assertJson([
-                'success' => true
+                'message' => 'You have been subscribed to percent alerts'
             ]);
     }
 

@@ -14,7 +14,7 @@
                     <div class="row" v-if="alertType === 'price'">
                         <div class="col s12">
                             <label for="price">Price Limit:</label>
-                            <input type="number" v-model="priceLimit" id="price" class="input-field" required />
+                            <input v-model="priceLimit" id="price" class="input-field" placeholder="75000" required />
                         </div>
                     </div>
 
@@ -64,7 +64,7 @@ export default {
     },
     setup(props) {
         const email = ref('');
-        const priceLimit = ref(0);
+        const priceLimit = ref(null);
         const percent = ref(0);
         const selectedTimeInterval = ref('1h');
         const timeIntervalOptions = ref([
@@ -75,7 +75,7 @@ export default {
 
         const resetFields = () => {
             email.value = '';
-            priceLimit.value = 0;
+            priceLimit.value = null;
             percent.value = 0;
             selectedTimeInterval.value = '1h';
         };
@@ -87,11 +87,12 @@ export default {
                     email: email.value,
                 };
 
+                //replace with switch statement, maybe in function
                 if (props.alertType === 'price') {
                     payload.price = priceLimit.value;
                 } else if (props.alertType === 'percent') {
                     payload.percent = percent.value;
-                    payload.timeInterval = parseInt(selectedTimeInterval.value, 10);
+                    payload.interval = parseInt(selectedTimeInterval.value, 10);
                 }
 
                 const response = await axios.post('/tracker/subscribe', payload);
